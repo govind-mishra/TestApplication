@@ -37,20 +37,29 @@ namespace TestApplication.Controllers
         [HttpPost]
         public  ViewResult Index(RssFeedViewModel viewModel)
         {
-            if (!ModelState.IsValid)
-                return View();
-            if (viewModel.CSVFile != null)
-            {
-                string wwwRootPath = hostingEnvironment.WebRootPath;
-               var csvText =  _rssFeedRepository.ReadCSV(viewModel.CSVFile);
-               string savedFile =  _rssFeedRepository.CreateCSVFileInRoot(wwwRootPath, viewModel.CSVFile.FileName, csvText);
-               ViewBag.SavedFile = savedFile;
-                return View("ConvertBResult");
-            }
+            
+            try {
+                if (!ModelState.IsValid)
+                    throw new Exception();
+                if (viewModel.CSVFile != null)
+                {
+                    string wwwRootPath = hostingEnvironment.WebRootPath;
+                    var csvText = _rssFeedRepository.ReadCSV(viewModel.CSVFile);
+                    string savedFile = _rssFeedRepository.CreateCSVFileInRoot(wwwRootPath, viewModel.CSVFile.FileName, csvText);
+                    ViewBag.SavedFile = savedFile;
+                    return View("ConvertBResult");
+                }
                 string url = viewModel.RSSFeedURl;
-            var feedItems = _rssFeedRepository.getFeedItemsFromURL(url);
-            IEnumerable<FeedArticlesAndDetail> feedArticlesAndDetails = _rssFeedRepository.ConvertAResult(feedItems.ToList());
-            return View("ConvertAResult",  feedArticlesAndDetails );
+                var feedItems = _rssFeedRepository.getFeedItemsFromURL(url);
+                IEnumerable<FeedArticlesAndDetail> feedArticlesAndDetails = _rssFeedRepository.ConvertAResult(feedItems.ToList());
+                return View("ConvertAResult", feedArticlesAndDetails);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View("ErrorPage");
+            }
+            
         }
     }
 }
