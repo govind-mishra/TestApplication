@@ -1,0 +1,22 @@
+﻿
+
+@{
+    ViewBag.Title = "ConvertBResult";
+
+}
+
+<div class="container">
+    <div class="row m-2">
+        <div class="col-12">
+            <div class="alert alert-success" role="alert">
+                File has been processed and stored in root directory you can download it by clicking below button
+            </div>
+        </div>
+        <div class="col-5">
+            <button type="submit" asp-page-handler="DownloadFile" class="btn-primary shadow btn-block w-50" onclick="location.href='@Url.Action("OnPostDownloadFile",new { filename = ViewBag.SavedFile})'">
+                Download
+            </button>
+
+        </div>
+    </div>
+</div>
